@@ -1,4 +1,4 @@
-# ☾ ZakatFlow — Zakat Calculation & Distribution Platform
+# ZakatFlow — Zakat Calculation & Distribution Platform
 
 An enterprise-grade platform for calculating and distributing zakat: a **multi-asset
 valuation engine**, **nisab and hawl (lunar year) tracking**, and an **append-only
