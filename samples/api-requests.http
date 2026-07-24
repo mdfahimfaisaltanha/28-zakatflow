@@ -1,0 +1,81 @@
+### ZakatFlow API walkthrough (VS Code REST Client / IntelliJ HTTP file)
+### Base URL
+@base = http://localhost:3000
+
+### 1. Current settings + nisab thresholds
+GET {{base}}/api/settings
+
+### 2. Update metal prices (organizations refresh these regularly)
+PUT {{base}}/api/settings
+Content-Type: application/json
+
+{
+  "goldPricePerGram": 76.20,
+  "silverPricePerGram": 0.97,
+  "nisabBasis": "silver"
+}
+
+### 3. List payers with latest calculations
+GET {{base}}/api/payers
+
+### 4. Create a payer
+POST {{base}}/api/payers
+Content-Type: application/json
+
+{ "name": "Maryam Siddiq", "email": "maryam@example.com" }
+
+### 5. Add assets (replace :payerId)
+POST {{base}}/api/assets
+Content-Type: application/json
+
+{ "payerId": ":payerId", "type": "cash", "label": "Savings", "quantity": 8000 }
+
+### 5b. Gold — quantity is GRAMS, valued at settings price automatically
+POST {{base}}/api/assets
+Content-Type: application/json
+
+{ "payerId": ":payerId", "type": "gold", "label": "Gold bangles", "quantity": 45 }
+
+### 5c. Stocks — needs valuePerUnit (market price)
+POST {{base}}/api/assets
+Content-Type: application/json
+
+{ "payerId": ":payerId", "type": "stocks", "label": "Index fund", "quantity": 100, "valuePerUnit": 41.75 }
+
+### 6. Add a deductible liability
+POST {{base}}/api/liabilities
+Content-Type: application/json
+
+{ "payerId": ":payerId", "label": "Rent due this month", "amount": 900, "dueWithinYear": true }
+
+### 7. RUN THE ZAKAT CALCULATION
+# Starts the hawl automatically if wealth reaches nisab for the first time;
+# breaks the hawl if wealth fell below nisab (classical rule).
+POST {{base}}/api/calculate
+Content-Type: application/json
+
+{ "payerId": ":payerId" }
+
+### 8. Payer detail — assets, liabilities, hawl progress, history
+GET {{base}}/api/payers/:payerId
+
+### 9. Recipients (8 asnaf categories enforced)
+GET {{base}}/api/recipients
+
+### 9b. Add a recipient — invalid category is rejected with the list of 8
+POST {{base}}/api/recipients
+Content-Type: application/json
+
+{ "name": "Halima Begum", "category": "fuqara", "notes": "Case #15", "verified": true }
+
+### 10. Distribution ledger + pool balance
+GET {{base}}/api/distributions
+
+### 10b. Disburse — rejected with 409 if it exceeds the undistributed pool
+POST {{base}}/api/distributions
+Content-Type: application/json
+
+{ "recipientId": ":recipientId", "amount": 75.00, "note": "Eid support" }
+
+### 11. Dashboard stats
+GET {{base}}/api/stats
