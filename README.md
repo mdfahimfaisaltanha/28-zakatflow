@@ -56,7 +56,7 @@ app/api/distributions — append-only ledger with pool-balance enforcement
 app/api/stats       — dashboard feed
 ```
 
-## Interview talking points
+## Design
 
 1. **Domain modelling under real constraints** — the rules come from 1,400-year-old
    jurisprudence with genuine scholarly variation. Every implemented position is
